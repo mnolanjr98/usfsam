@@ -7,7 +7,7 @@ import {StateRepresentationRendererService} from "./state-representation-rendere
 
 export {EventTypeRegistryService, Event} from "./event-type-registry.service";
 export {ActionDispatcherService} from "./action-dispatcher.service";
-export {ModelPresenterService, ActionSubscriber} from "./model-presenter.service";
+export {ModelPresenterService, ActionSubscriber, BaseModel} from "./model-presenter.service";
 export {StateRepresentationRendererService} from "./state-representation-renderer.service";
 
 @NgModule({

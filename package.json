@@ -1,6 +1,6 @@
 {
   "name": "usf-sam",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Mike Nolan <michael.nolan@usfoods.com>",
   "license": "MIT",
   "module": "dist/usf-sam.js",
