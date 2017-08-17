@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {StateRepresentationRendererService} from "./state-representation-renderer.service";
+import {StateRepresentationRendererService} from './state-representation-renderer.service';
 import {Event} from './event-type-registry.service';
 
 /**
@@ -21,7 +21,7 @@ export class ModelPresenterService /*implements ModelActionRegistry*/ {
 
   present(modelAction: string, data: any) {
 
-    let handlers = this.modelActionMap[modelAction];
+    const handlers = this.modelActionMap[modelAction];
     for (let handlerIndex = 0; handlerIndex < handlers.length; ++handlerIndex) {
       // We may acwant to do the change event handling here using this method.
       handlers[handlerIndex](data);
@@ -29,10 +29,10 @@ export class ModelPresenterService /*implements ModelActionRegistry*/ {
   }
 
   registerEventsForModel(model: BaseModel): void {
-    let targetTypeEventRegisty = EventMapRegistry.getRegistryForTargetType(Object.getPrototypeOf(model));
+    const targetTypeEventRegisty = EventMapRegistry.getRegistryForTargetType(Object.getPrototypeOf(model));
     if (targetTypeEventRegisty) {
-      for (let eventName in targetTypeEventRegisty) {
-        let handler = targetTypeEventRegisty[eventName];
+      for (const eventName in targetTypeEventRegisty) {
+        const handler = targetTypeEventRegisty[eventName];
         this.register(eventName, (data) => {
           return model[handler](data);
         });

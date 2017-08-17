@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Event, EventTypeRegistryService } from './event-type-registry.service';
-import { ModelPresenterService } from "./model-presenter.service";
+import { ModelPresenterService } from './model-presenter.service';
 
 @Injectable()
 export class ActionDispatcherService {
@@ -21,22 +21,20 @@ export class ActionDispatcherService {
   dispatch<DataType>(action: Event<DataType>) {
 
     // Pass the action to the Model Presenter
-    let actionResult = true;
+    const actionResult = true;
     if (action.execute) {
-      let actionExecutionResult: any = action.execute(action.data);
+      const actionExecutionResult: any = action.execute(action.data);
 
       if (actionExecutionResult instanceof Promise) {
         // We got a promise from the action handler, so we need to wait for completion.
         actionExecutionResult.then((executionResultData) => {
           this.modelPresenter.present(action.eventTypeName, executionResultData);
         });
-      }
-      else {
+      } else {
         // We had an action handler that didn't return a promise, so we're good to go
         this.modelPresenter.present(action.eventTypeName, actionExecutionResult);
       }
-    }
-    else {
+    } else {
       // We didn't have an action handler - move along
       this.modelPresenter.present(action.eventTypeName, action.data);
     }
