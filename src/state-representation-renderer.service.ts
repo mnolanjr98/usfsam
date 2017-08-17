@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {EventTypeRegistryService} from './event-type-registry.service';
 
 /* tslint:disable-next-line:import-blakclist */
-import {Subscription} from 'rxjs';
+import {Subscription} from 'rxjs/Subscription';
 
 @Injectable()
 export class StateRepresentationRendererService {

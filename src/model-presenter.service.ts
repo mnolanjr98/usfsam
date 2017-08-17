@@ -32,10 +32,12 @@ export class ModelPresenterService /*implements ModelActionRegistry*/ {
     const targetTypeEventRegisty = EventMapRegistry.getRegistryForTargetType(Object.getPrototypeOf(model));
     if (targetTypeEventRegisty) {
       for (const eventName in targetTypeEventRegisty) {
-        const handler = targetTypeEventRegisty[eventName];
-        this.register(eventName, (data) => {
-          return model[handler](data);
-        });
+        if (targetTypeEventRegisty.hasOwnProperty(eventName)) {
+            const handler = targetTypeEventRegisty[eventName];
+            this.register(eventName, (data) => {
+                return model[handler](data);
+            });
+        }
       }
     }
   }
@@ -49,14 +51,14 @@ export class ModelPresenterService /*implements ModelActionRegistry*/ {
 
     // The wrapper function can't reference the ModelPresenter via this, so we need
     // to create a closure to the renderer to allow it access.
-    let rendererRef = this.renderer;
+    const rendererRef = this.renderer;
 
     // IMPORTANT - By using a wrapper function here around the handler, we are able to add
     // in the routing logic without requiring the model to do it redundantly;
-    let wrapperFunction = (/*...wrapperData: any[]*/data: any): Event<any> | Promise<any> => {
-      console.log("wrapperFunction called for model callback");
-      //let event = handler.apply(this, wrapperData);
-      let event = handler(data);
+    const wrapperFunction = (/*...wrapperData: any[]*/data: any): Event<any> | Promise<any> => {
+      console.log('wrapperFunction called for model callback');
+      // let event = handler.apply(this, wrapperData);
+      const event = handler(data);
 
       if (event != null && event instanceof Event) {
 
@@ -64,11 +66,10 @@ export class ModelPresenterService /*implements ModelActionRegistry*/ {
           rendererRef.render(event.eventTypeName, event.data);
         }
 
-      }
-      else if (event != null && event instanceof Promise) {
+      } else if (event != null && event instanceof Promise) {
 
-        event.then((event: Event<any>) => {
-          rendererRef.render(event.eventTypeName, event.data);
+        event.then((localEevent: Event<any>) => {
+          rendererRef.render(localEevent.eventTypeName, localEevent.data);
         });
       }
 
@@ -81,13 +82,14 @@ export class ModelPresenterService /*implements ModelActionRegistry*/ {
 }
 
 // For now, a marker interface
+// tslint:disable-next-line:no-empty-interface
 export interface BaseModel {
 
 }
 
 // Decorator function
 export function ActionSubscriber(eventName: string) {
-  console.log("In action subscriber for event " + eventName);
+  console.log('In action subscriber for event ' + eventName);
   return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
 
     /*let originalFunction = target[propertyKey];
@@ -98,7 +100,7 @@ export function ActionSubscriber(eventName: string) {
       return result;
     };*/
 
-    console.log("adding actionSubscriberMap");
+    console.log('adding actionSubscriberMap');
     EventMapRegistry.addActionHandler(target, eventName, propertyKey);
   };
 }

@@ -1,6 +1,37 @@
 import { Injectable } from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 
+export class EventType<T> {
+
+    private actionFunction?: (data: any) => any;
+    constructor(readonly eventName: string, actionFunction?: (data: any) => any) {
+        if (actionFunction) {
+            this.actionFunction = actionFunction;
+        }
+    };
+
+    generateEvent<S>(data: S): Event<S> {
+        console.log('generating event');
+        const event = new Event(this.eventName, data, this.actionFunction);
+
+        console.log('event generation complete');
+        return event;
+    }
+}
+
+export class Event<T> {
+    eventTypeName: string;
+    data: T;
+    execute?: (data: any) => any;
+    constructor(eventTypeName: string, data: T, execute?: (data: any) => any) {
+        this.eventTypeName = eventTypeName;
+        this.data = data;
+        if (execute != null) {
+            this.execute = execute;
+        }
+    }
+}
+
 @Injectable()
 export class EventTypeRegistryService {
 
@@ -12,11 +43,9 @@ export class EventTypeRegistryService {
 
   registerApplicationActionEventType<T>(eventName: string, eventActionFuction?: (data: any) => any) {
 
-    const result = null;
     if (this.applicationActionEventTypes[eventName] == null) {
 
-      const newEventType = new EventType(eventName, eventActionFuction);
-      this.applicationActionEventTypes[eventName] = newEventType;
+      this.applicationActionEventTypes[eventName] = new EventType(eventName, eventActionFuction);
       console.log('Registered Application Action Event ' + eventName);
 
     } else {
@@ -59,41 +88,10 @@ export class EventTypeRegistryService {
     return eventType.generateEvent(data);
   }
 
-  fetchModelChangeEventHandlers(eventTypeName: string) : Subject<any> {
+  fetchModelChangeEventHandlers(eventTypeName: string): Subject<any> {
 
     // TODO need ot handle null
     const handlersWrapper = this.modelUpdateEventTypes[eventTypeName];
     return (handlersWrapper) ? handlersWrapper.handlers : null;
-  }
-}
-
-export class EventType<T> {
-
-  private actionFunction?: (data: any) => any;
-  constructor(readonly eventName: string, actionFunction?: (data: any) => any) {
-    if (actionFunction) {
-      this.actionFunction = actionFunction;
-    }
-  };
-
-  generateEvent<T>(data: T): Event<T> {
-    console.log('generating event');
-    const event = new Event(this.eventName, data, this.actionFunction);
-
-    console.log('event generation complete');
-    return event;
-  }
-}
-
-export class Event<T> {
-  eventTypeName: string;
-  data:T;
-  execute?: (data: any) => any;
-  constructor(eventTypeName: string, data:T, execute?: (data: any) => any) {
-    this.eventTypeName = eventTypeName;
-    this.data = data;
-    if (execute != null) {
-      this.execute = execute;
-    }
   }
 }
