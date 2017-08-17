@@ -12,14 +12,15 @@ export class EventTypeRegistryService {
 
   registerApplicationActionEventType<T>(eventName: string, eventActionFuction?: (data: any) => any) {
 
-    let result = null;
+    const result = null;
     if (this.applicationActionEventTypes[eventName] == null) {
-      let newEventType = new EventType(eventName, eventActionFuction);
+
+      const newEventType = new EventType(eventName, eventActionFuction);
       this.applicationActionEventTypes[eventName] = newEventType;
-      console.log("Registered Application Action Event " + eventName);
-    }
-    else {
-      console.log("Application Action Event ${eventName} is already registered");
+      console.log('Registered Application Action Event ' + eventName);
+
+    } else {
+      console.log('Application Action Event ${eventName} is already registered');
     }
   }
 
@@ -28,7 +29,7 @@ export class EventTypeRegistryService {
     let result = null;
     let handlerWrapper = this.modelUpdateEventTypes[eventName];
     if (handlerWrapper == null) {
-      let newEventType = new EventType(eventName);
+      const newEventType = new EventType(eventName);
       handlerWrapper = {
         eventType: newEventType,
         handlers: new Subject()
@@ -36,8 +37,7 @@ export class EventTypeRegistryService {
       result = handlerWrapper.handlers.subscribe(modelChangeHandler);
       this.modelUpdateEventTypes[eventName] = handlerWrapper;
 
-    }
-    else {
+    } else {
       result = handlerWrapper.handlers.subscribe(modelChangeHandler);
     }
     return result;
@@ -45,12 +45,14 @@ export class EventTypeRegistryService {
 
   generateApplicationActionEvent<DataType>(eventTypeName: string, data: DataType): Event<DataType> {
 
-    console.log("Attempting to generate event for type name " + eventTypeName);
-    let eventType: EventType<any> = this.applicationActionEventTypes[eventTypeName];
+    console.log('Attempting to generate event for type name ' + eventTypeName);
+    const eventType: EventType<any> = this.applicationActionEventTypes[eventTypeName];
     if (this.requireEventTypeRegistration && eventType == null) {
-      throw "Event Type Name ${eventTypeName} is not registered as an Application Action Event";
-    }
-    else if (eventType == null) {
+
+      throw new Error(`Event Type Name ${eventTypeName} is not registered as an Application Action Event`);
+
+    } else if (eventType == null) {
+
       return new Event<DataType>(eventTypeName, data);
     }
 
@@ -60,7 +62,7 @@ export class EventTypeRegistryService {
   fetchModelChangeEventHandlers(eventTypeName: string) : Subject<any> {
 
     // TODO need ot handle null
-    let handlersWrapper = this.modelUpdateEventTypes[eventTypeName];
+    const handlersWrapper = this.modelUpdateEventTypes[eventTypeName];
     return (handlersWrapper) ? handlersWrapper.handlers : null;
   }
 }
@@ -75,10 +77,10 @@ export class EventType<T> {
   };
 
   generateEvent<T>(data: T): Event<T> {
-    console.log("generating event");
-    let event = new Event(this.eventName, data, this.actionFunction);
+    console.log('generating event');
+    const event = new Event(this.eventName, data, this.actionFunction);
 
-    console.log("event generation complete");
+    console.log('event generation complete');
     return event;
   }
 }
