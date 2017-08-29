@@ -1,5 +1,19 @@
 import { Injectable } from '@angular/core';
-import {Subject, Subscription} from 'rxjs';
+import {Subject} from 'rxjs/Subject';
+import {Subscription} from 'rxjs/Subscription';
+
+export class Event<T> {
+    eventTypeName: string;
+    data: T;
+    execute?: (data: any) => any;
+    constructor(eventTypeName: string, data: T, execute?: (data: any) => any) {
+        this.eventTypeName = eventTypeName;
+        this.data = data;
+        if (execute != null) {
+            this.execute = execute;
+        }
+    }
+}
 
 export class EventType<T> {
 
@@ -16,19 +30,6 @@ export class EventType<T> {
 
         console.log('event generation complete');
         return event;
-    }
-}
-
-export class Event<T> {
-    eventTypeName: string;
-    data: T;
-    execute?: (data: any) => any;
-    constructor(eventTypeName: string, data: T, execute?: (data: any) => any) {
-        this.eventTypeName = eventTypeName;
-        this.data = data;
-        if (execute != null) {
-            this.execute = execute;
-        }
     }
 }
 

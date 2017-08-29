@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {StateRepresentationRendererService} from './state-representation-renderer.service';
 import {Event} from './event-type-registry.service';
+import {EventMapRegistry} from './event-map-registry';
 
 /**
  * Does the model own the event or the application.  They are going to register their handlers here -
@@ -103,28 +104,4 @@ export function ActionSubscriber(eventName: string) {
     console.log('adding actionSubscriberMap');
     EventMapRegistry.addActionHandler(target, eventName, propertyKey);
   };
-}
-
-export class EventMapRegistry {
-
-  private static ACTION_MODEL_METHOD_REGISTRY = [];
-
-  static addActionHandler(targetType: any, eventName: string, handlerName: string) {
-
-    let targetTypeEventRegistry = EventMapRegistry.ACTION_MODEL_METHOD_REGISTRY[targetType];
-    if (!targetTypeEventRegistry) {
-      targetTypeEventRegistry = [];
-      EventMapRegistry.ACTION_MODEL_METHOD_REGISTRY[targetType] = targetTypeEventRegistry;
-    }
-
-    targetTypeEventRegistry[eventName] = handlerName;
-  }
-
-  static getActionHandlerMap(): any[] {
-    return EventMapRegistry.ACTION_MODEL_METHOD_REGISTRY;
-  }
-
-  static getRegistryForTargetType(targetType: any): any[] {
-    return EventMapRegistry.ACTION_MODEL_METHOD_REGISTRY[targetType];
-  }
 }
